@@ -1,0 +1,58 @@
+/* Custom sunset theme for Onyx landing page */
+body {
+	background: linear-gradient(135deg, #5b2b8a 0%, #d7353a 50%, #f6c85f 100%);
+	background-attachment: fixed;
+}
+
+/* Make header content centered and prominent */
+#header {
+	background: transparent;
+}
+
+#header .content .inner {
+	text-align: center;
+	color: #ffffff;
+	padding: 4rem 1rem;
+}
+
+#header .content p {
+	color: rgba(246,200,95,0.95);
+	margin-top: 0.5rem;
+}
+
+ul.actions.special {
+	display: inline-flex;
+	gap: 1rem;
+	flex-wrap: wrap;
+	justify-content: center;
+	margin-top: 1.5rem;
+}
+
+ul.actions.special .button {
+	padding: 0.9rem 1.5rem;
+	border-radius: 6px;
+	background: transparent;
+	color: #f6c85f;
+	border: 1px solid rgba(246,200,95,0.2);
+	text-transform: none;
+	letter-spacing: 0.04rem;
+}
+
+ul.actions.special .button.primary {
+	background: linear-gradient(90deg,#f6c85f,#d9a021);
+	color: #000000;
+	border: none;
+	box-shadow: 0 8px 24px rgba(217,160,33,0.18);
+}
+
+/* Improve contrast for header icon */
+#header .logo .icon:before {
+	color: #f6c85f;
+}
+
+/* Small screens tweaks */
+@media screen and (max-width: 480px) {
+	#header .content .inner { padding: 2.5rem 1rem; }
+	ul.actions.special { gap: 0.5rem; }
+	ul.actions.special .button { padding: 0.75rem 1rem; }
+}
