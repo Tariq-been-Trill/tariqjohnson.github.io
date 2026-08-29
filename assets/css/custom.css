@@ -88,6 +88,20 @@ ul.actions.special .button:focus-visible {
 }
 
 /* Header social icons */
+
+/* Make ONYX Studios CTA explicitly white */
+ul.actions.special .button.onyx {
+	color: #ffffff !important;
+	border-color: #ffffff !important;
+}
+
+ul.actions.special .button.onyx:hover,
+ul.actions.special .button.onyx:focus,
+ul.actions.special .button.onyx:active {
+	background: linear-gradient(90deg,#f6c85f,#d9a021) !important;
+	color: #000000 !important;
+}
+
 .header-icons {
 	display: inline-flex;
 	gap: 0.75rem;
