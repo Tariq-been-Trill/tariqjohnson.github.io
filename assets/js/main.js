@@ -208,7 +208,7 @@
 				// Add state?
 					if (typeof addState != 'undefined'
 					&&	addState === true)
-						history.pushState(null, null, '#');
+						history.pushState(null, null, '/links');
 
 				// Handle lock.
 
@@ -295,7 +295,8 @@
 					$('<div class="close">Close</div>')
 						.appendTo($this)
 						.on('click', function() {
-							location.hash = '';
+							// Use history replace to avoid hash fragments
+							history.replaceState(null, null, '/links');
 						});
 
 				// Prevent clicks from inside article from bubbling.
@@ -337,7 +338,8 @@
 
 				// Empty hash?
 					if (location.hash == ''
-					||	location.hash == '#') {
+					||	location.hash == '#'
+					||	location.pathname === '/links') {
 
 						// Prevent default.
 							event.preventDefault();

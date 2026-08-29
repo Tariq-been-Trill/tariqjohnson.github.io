@@ -89,5 +89,14 @@
 			})();
 			</script>
 
+			<!-- Ensure URL shows /links instead of a trailing hash -->
+			<script>
+			if (typeof history.replaceState === 'function') {
+				if (location.pathname !== '/links') {
+					history.replaceState(null, null, '/links');
+				}
+			}
+			</script>
+
 	</body>
 </html>
