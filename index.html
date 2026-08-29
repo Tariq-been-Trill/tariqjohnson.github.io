@@ -54,10 +54,9 @@
 
 		<!-- BG -->
 			<div id="bg">
-				<video id="bg-video" autoplay muted loop playsinline poster="assets/video/bg-poster.jpg">
-					<source src="assets/video/bg.webm" type="video/webm">
-					<source src="assets/video/bg.mp4" type="video/mp4">
-					<source src="assets/background.mov" type="video/quicktime">
+				<video id="bg-video" autoplay muted loop playsinline poster="images/bg.jpg">
+					<source src="assets/background.webp" type="video/webm">
+					<source src="assets/background.mp4" type="video/mp4">
 					Your browser does not support the video tag.
 				</video>
 			</div>
@@ -82,13 +81,13 @@
 					// disable video on mobile, reduced-motion or save-data
 					try{ video.pause(); }catch(e){}
 					video.style.display = 'none';
-					bg.style.backgroundImage = "url('assets/video/bg-poster.jpg')";
+									bg.style.backgroundImage = "url('images/bg.jpg')";
 					bg.style.backgroundSize = 'cover';
 					bg.style.backgroundPosition = 'center';
 				}
 				video.addEventListener('error', function(){
 					video.style.display = 'none';
-					bg.style.backgroundImage = "url('assets/video/bg-poster.jpg')";
+									bg.style.backgroundImage = "url('images/bg.jpg')";
 				});
 			})();
 			</script>
