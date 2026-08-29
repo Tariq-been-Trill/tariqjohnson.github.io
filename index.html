@@ -54,7 +54,9 @@
 
 		<!-- BG -->
 			<div id="bg">
-				<video id="bg-video" autoplay muted loop playsinline>
+				<video id="bg-video" autoplay muted loop playsinline poster="assets/video/bg-poster.jpg">
+					<source src="assets/video/bg.webm" type="video/webm">
+					<source src="assets/video/bg.mp4" type="video/mp4">
 					<source src="assets/background.mov" type="video/quicktime">
 					Your browser does not support the video tag.
 				</video>
@@ -66,6 +68,30 @@
 			<script src="assets/js/breakpoints.min.js"></script>
 			<script src="assets/js/util.js"></script>
 			<script src="assets/js/main.js"></script>
+
+			<!-- Video fallback & device handling -->
+			<script>
+			(function(){
+				var video = document.getElementById('bg-video');
+				var bg = document.getElementById('bg');
+				var prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+				var saveData = navigator.connection && navigator.connection.saveData;
+				var isMobile = /Mobi|Android|iPhone|iPad|iPod/.test(navigator.userAgent) || window.innerWidth < 700;
+				if(!video) return;
+				if(prefersReduced || saveData || isMobile){
+					// disable video on mobile, reduced-motion or save-data
+					try{ video.pause(); }catch(e){}
+					video.style.display = 'none';
+					bg.style.backgroundImage = "url('assets/video/bg-poster.jpg')";
+					bg.style.backgroundSize = 'cover';
+					bg.style.backgroundPosition = 'center';
+				}
+				video.addEventListener('error', function(){
+					video.style.display = 'none';
+					bg.style.backgroundImage = "url('assets/video/bg-poster.jpg')";
+				});
+			})();
+			</script>
 
 	</body>
 </html>
