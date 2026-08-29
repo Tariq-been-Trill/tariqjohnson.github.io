@@ -35,8 +35,8 @@ ul.actions.special .button {
 	justify-content: center;
 	padding: 0.85rem 2rem;
 	border-radius: 999px;
-	background: #ffffff;
-	color: #111111;
+	background: transparent; /* transparent idle */
+	color: #ffffff; /* white text */
 	border: 1px solid #ffffff; /* white outline */
 	text-transform: none;
 	letter-spacing: 0.04rem;
@@ -47,8 +47,8 @@ ul.actions.special .button {
 
 /* Primary button uses same idle style; hover/active states apply uniformly below */
 ul.actions.special .button.primary {
-	background: #ffffff;
-	color: #111111;
+	background: transparent; /* transparent idle */
+	color: #ffffff; /* white text */
 	border: 1px solid #ffffff; /* white outline */
 	box-shadow: 0 6px 18px rgba(0,0,0,0.08);
 	border-radius: 999px;
