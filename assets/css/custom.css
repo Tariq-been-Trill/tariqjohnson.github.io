@@ -37,19 +37,19 @@ ul.actions.special .button {
 	border-radius: 999px;
 	background: #ffffff;
 	color: #111111;
-	border: 0;
+	border: 1px solid #ffffff; /* white outline */
 	text-transform: none;
 	letter-spacing: 0.04rem;
 	text-align: center;
 	min-width: 10rem;
-	transition: background 180ms ease, color 180ms ease, transform 120ms ease;
+	transition: background 180ms ease, color 180ms ease, transform 120ms ease, box-shadow 120ms ease;
 }
 
 /* Primary button uses same idle style; hover/active states apply uniformly below */
 ul.actions.special .button.primary {
 	background: #ffffff;
 	color: #111111;
-	border: 0;
+	border: 1px solid #ffffff; /* white outline */
 	box-shadow: 0 6px 18px rgba(0,0,0,0.08);
 	border-radius: 999px;
 	display: inline-flex;
