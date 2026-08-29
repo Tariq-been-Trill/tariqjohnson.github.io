@@ -1,7 +1,8 @@
 /* Custom sunset theme for Onyx landing page */
 body {
-	background: linear-gradient(135deg, #5b2b8a 0%, #d7353a 50%, #f6c85f 100%);
+	background: linear-gradient(135deg, #8e2de2 0%, #ff416c 60%);
 	background-attachment: fixed;
+	min-height: 100vh;
 }
 
 /* Make header content centered and prominent */
@@ -29,13 +30,18 @@ ul.actions.special {
 }
 
 ul.actions.special .button {
-	padding: 0.9rem 1.5rem;
-	border-radius: 6px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0.85rem 2rem;
+	border-radius: 999px;
 	background: transparent;
 	color: #f6c85f;
 	border: 1px solid rgba(246,200,95,0.2);
 	text-transform: none;
 	letter-spacing: 0.04rem;
+	text-align: center;
+	min-width: 10rem;
 }
 
 ul.actions.special .button.primary {
@@ -43,6 +49,10 @@ ul.actions.special .button.primary {
 	color: #000000;
 	border: none;
 	box-shadow: 0 8px 24px rgba(217,160,33,0.18);
+	border-radius: 999px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
 }
 
 /* Improve contrast for header icon */
