@@ -56,3 +56,31 @@ ul.actions.special .button.primary {
 	ul.actions.special { gap: 0.5rem; }
 	ul.actions.special .button { padding: 0.75rem 1rem; }
 }
+
+/* Header social icons */
+.header-icons {
+	display: inline-flex;
+	gap: 0.75rem;
+	margin-top: 1rem;
+	justify-content: center;
+}
+
+.header-icons li a {
+	color: rgba(246,200,95,0.95);
+	font-size: 1.25rem;
+	display: inline-block;
+	width: 2.25rem;
+	height: 2.25rem;
+	line-height: 2.25rem;
+	text-align: center;
+	border-radius: 4px;
+	background: rgba(0,0,0,0.08);
+	transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.header-icons li a:hover {
+	transform: translateY(-3px);
+	background: rgba(255,255,255,0.06);
+	color: #ffffff;
+}
+
