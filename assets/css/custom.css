@@ -17,7 +17,7 @@ body {
 }
 
 #header .content p {
-	color: rgba(246,200,95,0.95);
+	color: #ffffff;
 	margin-top: 0.5rem;
 }
 
@@ -77,7 +77,7 @@ ul.actions.special .button:focus-visible {
 
 /* Improve contrast for header icon */
 #header .logo .icon:before {
-	color: #f6c85f;
+	color: #ffffff;
 }
 
 /* Small screens tweaks */
@@ -110,7 +110,7 @@ ul.actions.special .button.onyx:active {
 }
 
 .header-icons li a {
-	color: rgba(246,200,95,0.95);
+	color: #ffffff;
 	font-size: 1.25rem;
 	display: inline-block;
 	width: 2.25rem;
