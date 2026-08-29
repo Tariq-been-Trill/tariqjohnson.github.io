@@ -17,7 +17,7 @@ body {
 }
 
 #header .content p {
-	color: #ffffff;
+	color: #f6c85f; /* gold */
 	margin-top: 0.5rem;
 }
 
@@ -99,7 +99,8 @@ ul.actions.special .button.onyx:hover,
 ul.actions.special .button.onyx:focus,
 ul.actions.special .button.onyx:active {
 	background: linear-gradient(90deg,#f6c85f,#d9a021) !important;
-	color: #000000 !important;
+	color: #ffffff !important; /* keep ONYX text white on hover */
+	border-color: #ffffff !important;
 }
 
 .header-icons {
