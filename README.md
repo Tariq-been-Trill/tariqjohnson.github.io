@@ -16,12 +16,13 @@ This will be a guide to artist that want to own their data & digital real estate
    
 3. upload template / code
    3a. Find a suitable template for the webstie you want to create. here is a resource to find free templates.
-   3b. edit the code as necessary
+   3b. edit the code as necessary.
+   3c. (I used github copilot... enter workflow details)
 
 
-4. Configure DNS
+5. Configure DNS
 
-5. Commit changes and deploy
+6. Commit changes and deploy
 
  ** note, to those that don't know, youre published page will be which ever brach is pinned **
 
