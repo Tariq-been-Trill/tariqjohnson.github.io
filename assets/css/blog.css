@@ -2,7 +2,7 @@
 
 body.blog-page {
   background: #000;
-  color: #e0e0e0;
+  color: #fff;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   margin: 0;
   padding: 0;
@@ -46,7 +46,7 @@ body.blog-page {
 .blog-header {
   text-align: center;
   margin-bottom: 60px;
-  border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+  border-bottom: 1px solid rgba(255, 215, 0, 0.3);
   padding-bottom: 40px;
 }
 
@@ -73,10 +73,10 @@ body.blog-page {
 .back-home {
   display: inline-block;
   margin-bottom: 30px;
-  color: #ffd700;
+  color: #fff;
   text-decoration: none;
   font-size: 0.9em;
-  border: 1px solid rgba(255, 215, 0, 0.3);
+  border: 1px solid #fff;
   padding: 8px 16px;
   border-radius: 4px;
   transition: all 0.3s ease;
@@ -84,6 +84,8 @@ body.blog-page {
 
 .back-home:hover {
   border-color: #ffd700;
+  background: linear-gradient(135deg, #ffd700, #9370db);
+  color: #000;
   box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
 }
 
@@ -95,9 +97,9 @@ body.blog-page {
 .search-bar input {
   width: 100%;
   padding: 15px 20px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 215, 0, 0.2);
-  color: #e0e0e0;
+  background: #000;
+  border: 1px solid #fff;
+  color: #fff;
   font-size: 1em;
   border-radius: 4px;
   transition: all 0.3s ease;
@@ -106,8 +108,8 @@ body.blog-page {
 .search-bar input:focus {
   outline: none;
   border-color: #ffd700;
-  box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
-  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+  background: #000;
 }
 
 .search-bar input::placeholder {
@@ -126,8 +128,8 @@ body.blog-page {
 .filter-btn {
   padding: 8px 16px;
   background: transparent;
-  border: 1px solid rgba(255, 215, 0, 0.2);
-  color: #e0e0e0;
+  border: 1px solid #fff;
+  color: #fff;
   cursor: pointer;
   border-radius: 20px;
   transition: all 0.3s ease;
@@ -136,9 +138,10 @@ body.blog-page {
 
 .filter-btn:hover,
 .filter-btn.active {
-  border-color: #ffd700;
-  color: #ffd700;
-  box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
+  border-color: transparent;
+  background: linear-gradient(135deg, #ffd700, #9370db);
+  color: #000;
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
 }
 
 /* Posts feed */
@@ -149,8 +152,8 @@ body.blog-page {
 }
 
 .post-card {
-  background: linear-gradient(135deg, rgba(20, 20, 40, 0.6), rgba(30, 10, 40, 0.6));
-  border: 1px solid rgba(255, 215, 0, 0.15);
+  background: #000;
+  border: 1px solid #fff;
   border-radius: 8px;
   padding: 30px;
   transition: all 0.3s ease;
@@ -171,9 +174,9 @@ body.blog-page {
 
 .post-card:hover {
   border-color: #ffd700;
-  box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
   transform: translateY(-5px);
-  background: linear-gradient(135deg, rgba(30, 30, 50, 0.8), rgba(40, 15, 50, 0.8));
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.05), rgba(147, 112, 219, 0.05));
 }
 
 .post-meta {
@@ -182,22 +185,23 @@ body.blog-page {
   align-items: center;
   margin-bottom: 12px;
   font-size: 0.85em;
-  color: #999;
+  color: #ccc;
 }
 
 .post-date {
-  color: #666;
+  color: #999;
 }
 
 .post-category {
   display: inline-block;
   padding: 4px 12px;
-  background: rgba(255, 215, 0, 0.1);
-  color: #ffd700;
+  background: linear-gradient(135deg, #ffd700, #9370db);
+  color: #000;
   border-radius: 4px;
   font-size: 0.75em;
   text-transform: uppercase;
   letter-spacing: 1px;
+  font-weight: 600;
 }
 
 .post-title {
@@ -209,7 +213,7 @@ body.blog-page {
 }
 
 .post-excerpt {
-  color: #aaa;
+  color: #ddd;
   line-height: 1.6;
   margin: 0;
   font-size: 1em;
@@ -218,7 +222,7 @@ body.blog-page {
 .post-card.expanded .post-content {
   margin-top: 20px;
   padding-top: 20px;
-  border-top: 1px solid rgba(255, 215, 0, 0.1);
+  border-top: 1px solid rgba(255, 215, 0, 0.3);
   color: #ddd;
   line-height: 1.8;
 }
@@ -233,7 +237,7 @@ body.blog-page {
 .no-results h2 {
   font-size: 1.5em;
   margin-bottom: 10px;
-  color: #888;
+  color: #999;
 }
 
 /* Responsive */
