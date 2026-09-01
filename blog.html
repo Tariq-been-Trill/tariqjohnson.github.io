@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>The Void - Tariq Johnson</title>
+	<link rel="stylesheet" href="assets/css/blog.css">
+</head>
+<body class="blog-page">
+	<div class="starfield" id="starfield"></div>
+
+	<div class="blog-container">
+		<a href="/" class="back-home">← back to home</a>
+
+		<div class="blog-header">
+			<h1>The Void</h1>
+			<p>Infinite thoughts scattered across the cosmos</p>
+		</div>
+
+		<div class="search-bar">
+			<input 
+				type="text" 
+				id="searchInput" 
+				placeholder="Search thoughts..."
+				autocomplete="off"
+			>
+		</div>
+
+		<div class="filters">
+			<button class="filter-btn active" data-filter="all">All</button>
+			<button class="filter-btn" data-filter="thoughts">Thoughts</button>
+			<button class="filter-btn" data-filter="article">Articles</button>
+		</div>
+
+		<div class="posts-feed" id="postsFeed"></div>
+		
+		<div class="no-results" id="noResults" style="display: none;">
+			<h2>Lost in the void</h2>
+			<p>No posts found matching your search.</p>
+		</div>
+	</div>
+
+	<script>
+		// Starfield background
+		function createStarfield() {
+			const starfield = document.getElementById('starfield');
+			const starCount = Math.min(100, Math.floor(window.innerWidth / 10));
+			
+			for (let i = 0; i < starCount; i++) {
+				const star = document.createElement('div');
+				star.className = 'star';
+				star.style.left = Math.random() * 100 + '%';
+				star.style.top = Math.random() * 100 + '%';
+				star.style.width = (Math.random() * 2 + 0.5) + 'px';
+				star.style.height = star.style.width;
+				star.style.animationDelay = (Math.random() * 3) + 's';
+				starfield.appendChild(star);
+			}
+		}
+
+		// Load and render posts
+		let allPosts = [];
+		let currentFilter = 'all';
+
+		async function loadPosts() {
+			try {
+				const response = await fetch('/assets/data/posts.json');
+				allPosts = await response.json();
+				// Sort by date descending
+				allPosts.sort((a, b) => b.timestamp - a.timestamp);
+				renderPosts();
+			} catch (error) {
+				console.error('Error loading posts:', error);
+				document.getElementById('postsFeed').innerHTML = '<p style="text-align: center; color: #666;">Unable to load posts.</p>';
+			}
+		}
+
+		function renderPosts() {
+			const feed = document.getElementById('postsFeed');
+			const noResults = document.getElementById('noResults');
+			const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+			
+			let filtered = allPosts.filter(post => {
+				const matchesSearch = post.title.toLowerCase().includes(searchTerm) ||
+					post.excerpt.toLowerCase().includes(searchTerm) ||
+					post.content.toLowerCase().includes(searchTerm);
+				
+				const matchesFilter = currentFilter === 'all' || post.category === currentFilter;
+				
+				return matchesSearch && matchesFilter;
+			});
+
+			if (filtered.length === 0) {
+				feed.style.display = 'none';
+				noResults.style.display = 'block';
+				return;
+			}
+
+			feed.style.display = 'flex';
+			noResults.style.display = 'none';
+			feed.innerHTML = filtered.map(post => `
+				<div class="post-card" onclick="toggleExpanded(this)">
+					<div class="post-meta">
+						<span class="post-date">${formatDate(post.date)}</span>
+						<span class="post-category">${post.category}</span>
+					</div>
+					<h2 class="post-title">${escapeHtml(post.title)}</h2>
+					<p class="post-excerpt">${escapeHtml(post.excerpt)}</p>
+					${post.content ? `<div class="post-content" style="display: none;">${escapeHtml(post.content)}</div>` : ''}
+				</div>
+			`).join('');
+		}
+
+		function toggleExpanded(card) {
+			const content = card.querySelector('.post-content');
+			if (content) {
+				card.classList.toggle('expanded');
+				content.style.display = content.style.display === 'none' ? 'block' : 'none';
+			}
+		}
+
+		function formatDate(dateStr) {
+			const date = new Date(dateStr);
+			return date.toLocaleDateString('en-US', { 
+				year: 'numeric', 
+				month: 'short', 
+				day: 'numeric' 
+			});
+		}
+
+		function escapeHtml(text) {
+			const div = document.createElement('div');
+			div.textContent = text;
+			return div.innerHTML;
+		}
+
+		// Search functionality
+		document.getElementById('searchInput').addEventListener('input', renderPosts);
+
+		// Filter functionality
+		document.querySelectorAll('.filter-btn').forEach(btn => {
+			btn.addEventListener('click', function() {
+				document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+				this.classList.add('active');
+				currentFilter = this.dataset.filter;
+				renderPosts();
+			});
+		});
+
+		// Initialize on load
+		window.addEventListener('DOMContentLoaded', () => {
+			createStarfield();
+			loadPosts();
+		});
+	</script>
+</body>
+</html>
