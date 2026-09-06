@@ -206,30 +206,6 @@
   .bottom-line.busy{
     cursor: default;
   }
-
-  .archive-link{
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: 44px;
-    display: flex;
-    justify-content: center;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 15px;
-    letter-spacing: 0.04em;
-    color: var(--gold-bright);
-    text-decoration: none;
-    opacity: 0;
-    transform: translateY(8px);
-    transition: opacity 0.7s ease, transform 0.7s ease;
-    pointer-events: none;
-  }
-
-  .archive-link.visible{
-    opacity: 1;
-    transform: translateY(0);
-    pointer-events: auto;
-  }
 </style>
 </head>
 <body id="body">
@@ -280,8 +256,6 @@
       <span id="bottomPrefix"></span><span class="dot blink" id="bottomDot">.</span>
     </a>
   </div>
-
-  <a class="archive-link" id="archiveLink" href="blog.html">The Void</a>
 
 <script>
   const body = document.getElementById('body');
@@ -444,7 +418,6 @@
   const bottomPrefix = document.getElementById('bottomPrefix');
   const bottomDot = document.getElementById('bottomDot');
   const bottomLink = document.getElementById('bottomLink');
-  const archiveLink = document.getElementById('archiveLink');
 
   let taglineStage = 0;
   let taglineBusy = false;
@@ -478,12 +451,12 @@
       await deleteFrom(bottomPrefix, 55);
       await typeInto(bottomPrefix, "the void", 90);
 
-      // Make final phrase clickable to enter the void phase
+      // Make final phrase clickable to reveal the table
       bottomLine.removeEventListener('click', handleBottomClick);
       bottomLink.style.pointerEvents = 'auto';
       bottomLink.addEventListener('click', (e2) => {
         e2.preventDefault();
-        enterVoidPhase();
+        revealTable();
       });
       return;
     }
@@ -494,56 +467,17 @@
 
   bottomLine.addEventListener('click', handleBottomClick);
 
-  // ---------- Phase two: the void ----------
+  // ---------- Reveal table with links ----------
 
-  async function enterVoidPhase(){
+  async function revealTable(){
     bottomDot.classList.remove('blink');
     await deleteFrom(bottomPrefix, 45);
     bottomLine.classList.remove('visible');
     bottomLine.style.pointerEvents = 'none';
 
-    await Promise.all(rowLabels.map((_, i) => deleteRowChars(i)));
-    table.classList.remove('visible');
-    table.style.display = 'none';
-
-    await deleteSpansSequential(prefix, 70);
-
-    dot.style.opacity = '';
-    dot.style.width = '';
-    dot.style.overflow = '';
-    dot.textContent = '.';
-    dot.classList.add('blink');
-
-    await nextClick();
-    dot.classList.remove('blink');
-
-    dot.textContent = '?';
-    await typeInto(prefix, "will i see you again", 55);
-    dot.classList.add('blink');
-
-    await nextClick();
-    await deleteFrom(prefix, 40);
-
-    await nextClick();
-    dot.classList.remove('blink');
-    dot.textContent = '';
-
-    lineRow2.classList.remove('empty', 'line-row--ar');
-    lineRow2.removeAttribute('dir');
-    lineRow2.removeAttribute('lang');
-    lineRow2.style.marginTop = '1.6em';
-    lineRow2.textContent = '';
-
-    await Promise.all([
-      typeInto(prefix, "but it is what it is", 55),
-      (async () => {
-        await sleep(650);
-        await typeInto(lineRow2, "sept 5, 2026", 100);
-      })()
-    ]);
-
-    await sleep(700);
-    archiveLink.classList.add('visible');
+    // Scroll table into view
+    table.classList.add('visible');
+    table.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
 </script>
 
