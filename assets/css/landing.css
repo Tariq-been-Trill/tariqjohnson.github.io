@@ -15,9 +15,6 @@ html,body{
   -webkit-font-smoothing:antialiased;
   -moz-osx-font-smoothing:grayscale;
 }
-/* STARFIELD BACKGROUND */
-#starfield{position:fixed;inset:0;z-index:0;pointer-events:none;background:transparent}
-
 /* scroll snap container */
 .main-snap{height:100vh;overflow-y:scroll;scroll-snap-type:y mandatory;-webkit-overflow-scrolling:touch;position:relative;z-index:1}
 .section{min-height:100vh;display:flex;align-items:center;justify-content:center;scroll-snap-align:start;position:relative;z-index:1}
