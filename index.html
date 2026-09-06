@@ -478,21 +478,12 @@
       await deleteFrom(bottomPrefix, 55);
       await typeInto(bottomPrefix, "the void", 90);
 
-      // Make final phrase clickable to reveal the links table
+      // Make final phrase clickable to enter the void phase
       bottomLine.removeEventListener('click', handleBottomClick);
       bottomLink.style.pointerEvents = 'auto';
       bottomLink.addEventListener('click', (e2) => {
         e2.preventDefault();
-        if (!table.classList.contains('visible')) {
-          table.classList.add('visible');
-          rowLabels.forEach((label, i) => {
-            const el = document.getElementById('row-' + i);
-            const val = document.getElementById('val-' + i);
-            if (el && !el.textContent) el.textContent = label;
-            if (val) val.classList.add('shown');
-          });
-        }
-        table.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        enterVoidPhase();
       });
       return;
     }
