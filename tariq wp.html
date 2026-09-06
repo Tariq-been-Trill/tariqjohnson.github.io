@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Tariq</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;1,400&family=JetBrains+Mono:wght@400;500&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --onyx: #08090A;
+    --pearl: #EDE9E1;
+    --muted: #6E7274;
+    --gold: #C6A15B;
+    --gold-bright: #E0BE7E;
+    --hairline: rgba(237,233,225,0.10);
+  }
+
+  *{ box-sizing: border-box; }
+
+  html, body{
+    margin: 0;
+    height: 100%;
+    background: var(--onyx);
+    overscroll-behavior: none;
+  }
+
+  body{
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--pearl);
+    padding: 24px;
+    cursor: pointer;
+  }
+
+  body.done{
+    cursor: default;
+  }
+
+  .stage{
+    width: 100%;
+    max-width: 420px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* ---------- Line 1: prefix + persistent dot ---------- */
+
+  .line{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .line-row{
+    width: 100%;
+    max-width: 100%;
+    font-size: clamp(20px, 6vw, 30px);
+    line-height: 1.4;
+    letter-spacing: 0.01em;
+    white-space: normal;
+    text-align: center;
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+
+  .line-row--ar{
+    font-family: 'Amiri', serif;
+    font-size: clamp(19px, 5.6vw, 27px);
+    line-height: 1.9;
+    direction: rtl;
+    transition: opacity 0.4s ease, max-height 0.4s ease, margin 0.4s ease;
+    max-height: 60px;
+    overflow: hidden;
+  }
+
+  .line-row--ar.empty{
+    opacity: 0;
+    max-height: 0;
+  }
+
+  .dot{
+    display: inline-block;
+  }
+
+  .dot.blink{
+    animation: blink 1.1s steps(1) infinite;
+  }
+
+  @keyframes blink{
+    0%, 45%{ opacity: 1; }
+    46%, 100%{ opacity: 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .dot.blink{ animation: none; opacity: 1; }
+  }
+
+  /* ---------- Link table ---------- */
+
+  .table{
+    width: 100%;
+    margin-top: 40px;
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    border-top: 1px solid var(--hairline);
+    pointer-events: none;
+  }
+
+  .table.visible{
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  .row{
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: baseline;
+    gap: 12px;
+    padding: 14px 2px;
+    border-bottom: 1px solid var(--hairline);
+    text-decoration: none;
+    color: var(--pearl);
+    -webkit-tap-highlight-color: transparent;
+    transition: color 0.2s ease;
+  }
+
+  .row:active{
+    color: var(--gold-bright);
+  }
+
+  .row-label{
+    font-size: 15px;
+    letter-spacing: 0.01em;
+    min-height: 1.3em;
+  }
+
+  .row-value{
+    font-size: 12px;
+    color: var(--muted);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    white-space: nowrap;
+  }
+
+  .row-value.shown{
+    opacity: 1;
+  }
+
+  .cursor-char{
+    display: inline-block;
+    width: 8px;
+    background: var(--gold);
+    margin-left: 1px;
+    animation: blink 1s steps(1) infinite;
+    vertical-align: -2px;
+    height: 1em;
+  }
+
+  .cursor-char.hidden{
+    display: none;
+  }
+
+  .sr-only{
+    position: absolute;
+    width: 1px; height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+
+  /* ---------- Bottom tagline sequence ---------- */
+
+  .bottom-line{
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 44px;
+    display: flex;
+    justify-content: center;
+    font-size: 17px;
+    letter-spacing: 0.02em;
+    color: #FFFFFF;
+    white-space: pre;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.6s ease, transform 0.6s ease,
+                max-height 0.5s ease, margin 0.5s ease;
+    max-height: 40px;
+    overflow: hidden;
+    cursor: pointer;
+    padding: 0 24px;
+    text-align: center;
+    pointer-events: none;
+  }
+
+  .bottom-line.visible{
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  .bottom-line.collapsed{
+    opacity: 0;
+    max-height: 0;
+    transform: translateY(8px);
+    cursor: default;
+    pointer-events: none;
+  }
+
+  .bottom-line.busy{
+    cursor: default;
+  }
+
+  .archive-link{
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 44px;
+    display: flex;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 15px;
+    letter-spacing: 0.04em;
+    color: var(--gold-bright);
+    text-decoration: none;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+    pointer-events: none;
+  }
+
+  .archive-link.visible{
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+</style>
+</head>
+<body id="body">
+
+  <div class="stage">
+    <div class="line" id="topLine">
+      <div class="line-row" id="lineRow1"><span id="prefix"></span><span class="dot blink" id="dot">.</span></div>
+      <div class="line-row line-row--ar" id="lineRow2" lang="ar"></div>
+    </div>
+
+    <nav class="table" id="table" aria-label="Links">
+      <a class="row" href="https://tariqandco.jewelry" target="_blank" rel="noopener">
+        <span class="row-label" id="row-0"></span>
+        <span class="row-value" id="val-0">tariqandco.jewelry</span>
+        <span class="sr-only">Tariq &amp; Co. Jewelry</span>
+      </a>
+      <a class="row" href="https://onyxstudios.xyz" target="_blank" rel="noopener">
+        <span class="row-label" id="row-1"></span>
+        <span class="row-value" id="val-1">onyxstudios.xyz</span>
+        <span class="sr-only">Onyx Studios</span>
+      </a>
+      <a class="row" href="mailto:tariqjohnson@pm.me">
+        <span class="row-label" id="row-2"></span>
+        <span class="row-value" id="val-2">tariqjohnson@pm.me</span>
+        <span class="sr-only">Email</span>
+      </a>
+      <a class="row" href="javascript:void(0)">
+        <span class="row-label" id="row-3"></span>
+        <span class="row-value" id="val-3">@tariq</span>
+        <span class="sr-only">Instagram</span>
+      </a>
+      <a class="row" href="javascript:void(0)">
+        <span class="row-label" id="row-4"></span>
+        <span class="row-value" id="val-4">@tariq</span>
+        <span class="sr-only">Tiktok</span>
+      </a>
+      <a class="row" href="javascript:void(0)">
+        <span class="row-label" id="row-5"></span>
+        <span class="row-value" id="val-5">join</span>
+        <span class="sr-only">Discord</span>
+      </a>
+    </nav>
+  </div>
+
+  <div class="bottom-line" id="bottomLine">
+    <a id="bottomLink" href="#" rel="noopener"
+       style="pointer-events:none; text-decoration:none; color:inherit;">
+      <span id="bottomPrefix"></span><span class="dot blink" id="bottomDot">.</span>
+    </a>
+  </div>
+
+  <a class="archive-link" id="archiveLink" href="archive.html">Archive</a>
+
+<script>
+  const body = document.getElementById('body');
+  const prefix = document.getElementById('prefix');
+  const dot = document.getElementById('dot');
+  const lineRow2 = document.getElementById('lineRow2');
+  const table = document.getElementById('table');
+
+  const rows = [
+    { label: "Jewelry" },
+    { label: "Studio" },
+    { label: "Instagram" },
+    { label: "Tiktok" },
+    { label: "Discord" },
+    { label: "Email" }
+  ];
+  // map row order to existing DOM ids (row-0..row-5 already placed in HTML order)
+  const rowLabels = ["Jewelry", "Studio", "Email", "Instagram", "Tiktok", "Discord"];
+
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+  async function typeInto(el, text, speed){
+    for (let i = 0; i < text.length; i++){
+      el.textContent += text[i];
+      await sleep(speed);
+    }
+  }
+
+  async function deleteFrom(el, speed){
+    while (el.textContent.length){
+      el.textContent = el.textContent.slice(0, -1);
+      await sleep(speed);
+    }
+  }
+
+  function shuffle(arr){
+    for (let i = arr.length - 1; i > 0; i--){
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
+
+  function nextClick(){
+    return new Promise((resolve) => {
+      function onClick(e){ cleanup(); resolve(); }
+      function onKey(e){ if (e.key === 'Enter' || e.key === ' ') { cleanup(); resolve(); } }
+      function cleanup(){
+        body.removeEventListener('click', onClick);
+        body.removeEventListener('keydown', onKey);
+      }
+      body.addEventListener('click', onClick);
+      body.addEventListener('keydown', onKey);
+    });
+  }
+
+  // Wrap a line's plain text into one <span> per character so individual
+  // characters can be revealed or removed out of order.
+  function wrapChars(el){
+    const text = el.textContent;
+    el.textContent = '';
+    return [...text].map((ch) => {
+      const s = document.createElement('span');
+      s.textContent = ch;
+      s.style.display = 'inline-block';
+      s.style.transition = 'opacity 0.15s ease';
+      el.appendChild(s);
+      return s;
+    });
+  }
+
+  // Randomly hides characters one at a time (not left-to-right), skipping
+  // any span passed in `keepSpans`, until only those survive.
+  async function randomDelete(spans, keepSpans, speed){
+    const keep = new Set(keepSpans);
+    const removable = shuffle(spans.filter((s) => !keep.has(s)));
+    for (const s of removable){
+      s.style.opacity = '0';
+      s.style.width = '0';
+      s.style.overflow = 'hidden';
+      await sleep(speed + Math.random() * speed);
+    }
+  }
+
+  async function randomFillRow(index){
+    const el = document.getElementById('row-' + index);
+    const val = document.getElementById('val-' + index);
+    el.textContent = rowLabels[index];
+    const spans = wrapChars(el);
+    spans.forEach((s) => { s.style.opacity = '0'; });
+    const order = shuffle(spans.map((_, i) => i));
+    for (const i of order){
+      spans[i].style.opacity = '1';
+      await sleep(35 + Math.random() * 55);
+    }
+    val.classList.add('shown');
+  }
+
+  // Deletes span-wrapped characters one at a time, in order (not random) —
+  // used for the plain "backspacing" feel of the void wipe.
+  async function deleteSpansSequential(container, speed){
+    const spans = Array.from(container.children);
+    for (let i = spans.length - 1; i >= 0; i--){
+      spans[i].style.opacity = '0';
+      spans[i].style.width = '0';
+      spans[i].style.overflow = 'hidden';
+      await sleep(speed);
+    }
+    container.textContent = '';
+  }
+
+  async function deleteRowChars(index){
+    const el = document.getElementById('row-' + index);
+    const val = document.getElementById('val-' + index);
+    val.classList.remove('shown');
+    await deleteSpansSequential(el, 22 + Math.random() * 12);
+  }
+
+  const arabicLine = "\u0627\u0644\u0633\u0644\u0627\u0645 \u0639\u0644\u064A\u0643\u0645 \u0648\u0631\u062D\u0645\u0629 \u0627\u0644\u0644\u0647 \u0648\u0628\u0631\u0643\u0627\u062A\u0647";
+
+  async function play(){
+    // Stage 0: dot blinks until first click.
+    await nextClick();
+    dot.classList.remove('blink');
+
+    await typeInto(prefix, "Ciao", 95);
+    await sleep(650);
+    await deleteFrom(prefix, 60);
+    await sleep(280);
+
+    // Both lines fill in together, letter by letter.
+    await Promise.all([
+      typeInto(prefix, "I'm Tariq Johnson", 65),
+      typeInto(lineRow2, arabicLine, 65)
+    ]);
+
+    // Dot blinks again, waiting for the next click.
+    dot.classList.add('blink');
+    await nextClick();
+    dot.classList.remove('blink');
+
+    // Random deletion: everything vanishes out of order except "Tariq".
+    const line1Spans = wrapChars(prefix);
+    const line2Spans = wrapChars(lineRow2);
+    const fullText = "I'm Tariq Johnson";
+    const keepStart = fullText.indexOf("Tariq");
+    const keepSpans = line1Spans.slice(keepStart, keepStart + 5);
+    // the anchor dot itself is not protected — it disappears too.
+    const allDeletable = [...line1Spans, dot, ...line2Spans];
+
+    await randomDelete(allDeletable, keepSpans, 35);
+    lineRow2.classList.add('empty');
+
+    // Table appears, each row's word filling in out of order.
+    table.classList.add('visible');
+    await Promise.all(rowLabels.map((_, i) => randomFillRow(i)));
+
+    body.classList.add('done');
+
+    await sleep(500);
+    bottomLine.classList.add('visible');
+  }
+
+  play();
+
+  // ---------- Bottom tagline sequence ----------
+
+  const bottomLine = document.getElementById('bottomLine');
+  const bottomPrefix = document.getElementById('bottomPrefix');
+  const bottomDot = document.getElementById('bottomDot');
+  const bottomLink = document.getElementById('bottomLink');
+  const archiveLink = document.getElementById('archiveLink');
+
+  let taglineStage = 0;
+  let taglineBusy = false;
+
+  async function handleBottomClick(e){
+    e.stopPropagation();
+    if (taglineBusy) return;
+    taglineBusy = true;
+    bottomLine.classList.add('busy');
+    bottomDot.classList.remove('blink');
+
+    if (taglineStage === 0){
+      taglineStage = 1;
+      await typeInto(bottomPrefix, " Visual Artist..", 85);
+      bottomDot.classList.add('blink');
+
+    } else if (taglineStage === 1){
+      taglineStage = 2;
+      await deleteFrom(bottomPrefix, 55);
+      await typeInto(bottomPrefix, "Curator", 90);
+      bottomDot.classList.add('blink');
+
+    } else if (taglineStage === 2){
+      taglineStage = 3;
+      await deleteFrom(bottomPrefix, 55);
+      await typeInto(bottomPrefix, "Digital Architect", 90);
+      bottomDot.classList.add('blink');
+
+    } else if (taglineStage === 3){
+      taglineStage = 4;
+      await deleteFrom(bottomPrefix, 55);
+      await typeInto(bottomPrefix, "the void", 90);
+
+      // "the void" becomes clickable, but it advances the page in place —
+      // it does not open a new tab or leave the document.
+      bottomLink.style.pointerEvents = 'auto';
+      bottomLine.removeEventListener('click', handleBottomClick);
+      bottomLink.addEventListener('click', (e2) => {
+        e2.preventDefault();
+        enterVoidPhase();
+      });
+      return;
+    }
+
+    taglineBusy = false;
+    bottomLine.classList.remove('busy');
+  }
+
+  bottomLine.addEventListener('click', handleBottomClick);
+
+  // ---------- Phase two: the void ----------
+
+  async function enterVoidPhase(){
+    // Wipe "the void" itself.
+    bottomDot.classList.remove('blink');
+    await deleteFrom(bottomPrefix, 45);
+    bottomLine.classList.remove('visible');
+    bottomLine.style.pointerEvents = 'none';
+
+    // Wipe every link row, letter by letter, in parallel.
+    await Promise.all(rowLabels.map((_, i) => deleteRowChars(i)));
+    table.classList.remove('visible');
+    table.style.display = 'none';
+
+    // Wipe the last remaining word, "Tariq".
+    await deleteSpansSequential(prefix, 70);
+
+    // The dot returns to its original position and blinks.
+    dot.style.opacity = '';
+    dot.style.width = '';
+    dot.style.overflow = '';
+    dot.textContent = '.';
+    dot.classList.add('blink');
+
+    await nextClick();
+    dot.classList.remove('blink');
+
+    // The dot becomes the question mark this sentence ends on.
+    dot.textContent = '?';
+    await typeInto(prefix, "ever wonder about them thoughts that be lost in the void", 55);
+    dot.classList.add('blink');
+
+    await nextClick();
+    // The letters delete, but the "?" keeps blinking the entire time.
+    await deleteFrom(prefix, 40);
+
+    await nextClick();
+    dot.classList.remove('blink');
+    dot.textContent = '';
+
+    // Reuse the second row for the closing line, stripped of its Arabic styling.
+    lineRow2.classList.remove('empty', 'line-row--ar');
+    lineRow2.removeAttribute('dir');
+    lineRow2.removeAttribute('lang');
+    lineRow2.style.marginTop = '1.6em';
+    lineRow2.textContent = '';
+
+    await Promise.all([
+      typeInto(prefix, "I think it's fair to say", 55),
+      (async () => {
+        await sleep(650);
+        await typeInto(lineRow2, "I'm done", 100);
+      })()
+    ]);
+
+    await sleep(700);
+    archiveLink.classList.add('visible');
+  }
+</script>
+
+</body>
+</html>
