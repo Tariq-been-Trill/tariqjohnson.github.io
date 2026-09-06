@@ -478,10 +478,22 @@
       await deleteFrom(bottomPrefix, 55);
       await typeInto(bottomPrefix, "the void", 90);
 
-      // Final state: make non-interactive and remove click handler
+      // Make final phrase clickable to reveal the links table
       bottomLine.removeEventListener('click', handleBottomClick);
-      bottomLink.style.pointerEvents = 'none';
-      // do not attach any click handler — this is the end of the experience
+      bottomLink.style.pointerEvents = 'auto';
+      bottomLink.addEventListener('click', (e2) => {
+        e2.preventDefault();
+        if (!table.classList.contains('visible')) {
+          table.classList.add('visible');
+          rowLabels.forEach((label, i) => {
+            const el = document.getElementById('row-' + i);
+            const val = document.getElementById('val-' + i);
+            if (el && !el.textContent) el.textContent = label;
+            if (val) val.classList.add('shown');
+          });
+        }
+        table.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      });
       return;
     }
 
