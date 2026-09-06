@@ -346,19 +346,6 @@
     val.classList.add('shown');
   }
 
-  // Deletes span-wrapped characters one at a time, in order (not random) —
-  // used for the plain "backspacing" feel of the void wipe.
-  async function deleteSpansSequential(container, speed){
-    const spans = Array.from(container.children);
-    for (let i = spans.length - 1; i >= 0; i--){
-      spans[i].style.opacity = '0';
-      spans[i].style.width = '0';
-      spans[i].style.overflow = 'hidden';
-      await sleep(speed);
-    }
-    container.textContent = '';
-  }
-
   async function deleteRowChars(index){
     const el = document.getElementById('row-' + index);
     const val = document.getElementById('val-' + index);
