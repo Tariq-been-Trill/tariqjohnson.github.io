@@ -478,12 +478,10 @@
       await deleteFrom(bottomPrefix, 55);
       await typeInto(bottomPrefix, "the void", 90);
 
-      bottomLink.style.pointerEvents = 'auto';
+      // Final state: make non-interactive and remove click handler
       bottomLine.removeEventListener('click', handleBottomClick);
-      bottomLink.addEventListener('click', (e2) => {
-        e2.preventDefault();
-        enterVoidPhase();
-      });
+      bottomLink.style.pointerEvents = 'none';
+      // do not attach any click handler — this is the end of the experience
       return;
     }
 
