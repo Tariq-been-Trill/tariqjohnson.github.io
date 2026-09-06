@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>Tariq Johnson</title>
+<title>Tariq</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;1,400&family=JetBrains+Mono:wght@400;500&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
@@ -129,14 +129,12 @@
     border-bottom: 1px solid var(--hairline);
     text-decoration: none;
     color: var(--pearl);
-    -webkit-tap-highlight-color: rgba(192, 161, 91, 0.3);
-    transition: all 0.15s ease;
+    -webkit-tap-highlight-color: transparent;
+    transition: color 0.2s ease;
   }
 
   .row:active{
     color: var(--gold-bright);
-    background: rgba(192, 161, 91, 0.15);
-    transform: scale(1.01);
   }
 
   .row-label{
@@ -155,6 +153,20 @@
 
   .row-value.shown{
     opacity: 1;
+  }
+
+  .cursor-char{
+    display: inline-block;
+    width: 8px;
+    background: var(--gold);
+    margin-left: 1px;
+    animation: blink 1s steps(1) infinite;
+    vertical-align: -2px;
+    height: 1em;
+  }
+
+  .cursor-char.hidden{
+    display: none;
   }
 
   .sr-only{
@@ -206,6 +218,30 @@
   .bottom-line.busy{
     cursor: default;
   }
+
+  .archive-link{
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 44px;
+    display: flex;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 15px;
+    letter-spacing: 0.04em;
+    color: var(--gold-bright);
+    text-decoration: none;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+    pointer-events: none;
+  }
+
+  .archive-link.visible{
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
 </style>
 </head>
 <body id="body">
@@ -232,19 +268,19 @@
         <span class="row-value" id="val-2">tariqjohnson@pm.me</span>
         <span class="sr-only">Email</span>
       </a>
-      <a class="row" href="https://www.instagram.com/tariq.been.trill/" target="_blank" rel="noopener">
+      <a class="row" href="#" target="_blank" rel="noopener">
         <span class="row-label" id="row-3"></span>
-        <span class="row-value" id="val-3">@tariq.been.trill</span>
+        <span class="row-value" id="val-3">@tariq</span>
         <span class="sr-only">Instagram</span>
       </a>
-      <a class="row" href="https://www.tiktok.com/@tariqbeentrill" target="_blank" rel="noopener">
+      <a class="row" href="#" target="_blank" rel="noopener">
         <span class="row-label" id="row-4"></span>
-        <span class="row-value" id="val-4">@tariqbeentrill</span>
-        <span class="sr-only">TikTok</span>
+        <span class="row-value" id="val-4">@tariq</span>
+        <span class="sr-only">Tiktok</span>
       </a>
-      <a class="row" href="https://discord.com/channels/1541942499809951854/1541948325723377764" target="_blank" rel="noopener">
+      <a class="row" href="#" target="_blank" rel="noopener">
         <span class="row-label" id="row-5"></span>
-        <span class="row-value" id="val-5">join server</span>
+        <span class="row-value" id="val-5">join</span>
         <span class="sr-only">Discord</span>
       </a>
     </nav>
@@ -257,6 +293,8 @@
     </a>
   </div>
 
+  <a class="archive-link" id="archiveLink" href="archive.html">Archive</a>
+
 <script>
   const body = document.getElementById('body');
   const prefix = document.getElementById('prefix');
@@ -264,8 +302,16 @@
   const lineRow2 = document.getElementById('lineRow2');
   const table = document.getElementById('table');
 
-  // Row labels must match HTML order (row-0 through row-5)
-  const rowLabels = ["Jewelry", "Studio", "Email", "Instagram", "TikTok", "Discord"];
+  const rows = [
+    { label: "Jewelry" },
+    { label: "Studio" },
+    { label: "Instagram" },
+    { label: "Tiktok" },
+    { label: "Discord" },
+    { label: "Email" }
+  ];
+  // map row order to existing DOM ids (row-0..row-5 already placed in HTML order)
+  const rowLabels = ["Jewelry", "Studio", "Email", "Instagram", "Tiktok", "Discord"];
 
   const sleep = ms => new Promise(r => setTimeout(r, ms));
 
@@ -380,7 +426,7 @@
 
     // Both lines fill in together, letter by letter.
     await Promise.all([
-      typeInto(prefix, "I'm Tariq", 65),
+      typeInto(prefix, "I'm Tariq Johnson", 65),
       typeInto(lineRow2, arabicLine, 65)
     ]);
 
@@ -392,9 +438,10 @@
     // Random deletion: everything vanishes out of order except "Tariq".
     const line1Spans = wrapChars(prefix);
     const line2Spans = wrapChars(lineRow2);
-    const fullText = "I'm Tariq";
+    const fullText = "I'm Tariq Johnson";
     const keepStart = fullText.indexOf("Tariq");
     const keepSpans = line1Spans.slice(keepStart, keepStart + 5);
+    // the anchor dot itself is not protected — it disappears too.
     const allDeletable = [...line1Spans, dot, ...line2Spans];
 
     await randomDelete(allDeletable, keepSpans, 35);
@@ -418,6 +465,7 @@
   const bottomPrefix = document.getElementById('bottomPrefix');
   const bottomDot = document.getElementById('bottomDot');
   const bottomLink = document.getElementById('bottomLink');
+  const archiveLink = document.getElementById('archiveLink');
 
   let taglineStage = 0;
   let taglineBusy = false;
@@ -431,7 +479,7 @@
 
     if (taglineStage === 0){
       taglineStage = 1;
-      await typeInto(bottomPrefix, "Visual Artist", 85);
+      await typeInto(bottomPrefix, " Visual Artist", 85);
       bottomDot.classList.add('blink');
 
     } else if (taglineStage === 1){
@@ -443,7 +491,7 @@
     } else if (taglineStage === 2){
       taglineStage = 3;
       await deleteFrom(bottomPrefix, 55);
-      await typeInto(bottomPrefix, "Builder", 90);
+      await typeInto(bottomPrefix, "Digital Architect", 90);
       bottomDot.classList.add('blink');
 
     } else if (taglineStage === 3){
@@ -451,12 +499,13 @@
       await deleteFrom(bottomPrefix, 55);
       await typeInto(bottomPrefix, "the void", 90);
 
-      // Make final phrase clickable to reveal the table
-      bottomLine.removeEventListener('click', handleBottomClick);
+      // "the void" becomes clickable, but it advances the page in place —
+      // it does not open a new tab or leave the document.
       bottomLink.style.pointerEvents = 'auto';
+      bottomLine.removeEventListener('click', handleBottomClick);
       bottomLink.addEventListener('click', (e2) => {
         e2.preventDefault();
-        revealTable();
+        enterVoidPhase();
       });
       return;
     }
@@ -467,17 +516,63 @@
 
   bottomLine.addEventListener('click', handleBottomClick);
 
-  // ---------- Reveal table with links ----------
+  // ---------- Phase two: the void ----------
 
-  async function revealTable(){
+  async function enterVoidPhase(){
+    // Wipe "the void" itself.
     bottomDot.classList.remove('blink');
     await deleteFrom(bottomPrefix, 45);
     bottomLine.classList.remove('visible');
     bottomLine.style.pointerEvents = 'none';
 
-    // Scroll table into view
-    table.classList.add('visible');
-    table.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    // Wipe every link row, letter by letter, in parallel.
+    await Promise.all(rowLabels.map((_, i) => deleteRowChars(i)));
+    table.classList.remove('visible');
+    table.style.display = 'none';
+
+    // Wipe the last remaining word, "Tariq".
+    await deleteSpansSequential(prefix, 70);
+
+    // The dot returns to its original position and blinks.
+    dot.style.opacity = '';
+    dot.style.width = '';
+    dot.style.overflow = '';
+    dot.textContent = '.';
+    dot.classList.add('blink');
+
+    await nextClick();
+    dot.classList.remove('blink');
+
+    // The dot becomes the question mark this sentence ends on.
+    dot.textContent = '?';
+    await typeInto(prefix, "will we see each other again", 55);
+    dot.classList.add('blink');
+
+    await nextClick();
+    // The letters delete, but the "?" keeps blinking the entire time.
+    await deleteFrom(prefix, 40);
+
+    await nextClick();
+    dot.classList.remove('blink');
+    dot.textContent = '';
+
+    // Reuse the second row for the closing line, stripped of its Arabic styling.
+    lineRow2.classList.remove('empty', 'line-row--ar');
+    lineRow2.removeAttribute('dir');
+    lineRow2.removeAttribute('lang');
+    lineRow2.style.marginTop = '1.6em';
+    lineRow2.textContent = '';
+
+    await Promise.all([
+      typeInto(prefix, "It is what it is", 55),
+      (async () => {
+        await sleep(650);
+        await typeInto(lineRow2, "sept 5th, 2026", 100);
+      })()
+    ]);
+
+    await sleep(700);
+    archiveLink.classList.add('visible');
   }
 </script>
 
