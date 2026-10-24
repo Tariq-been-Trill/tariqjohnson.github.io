@@ -7,6 +7,15 @@
 
 window.POSTS = [
   {
+    date: "2026-10-24",
+    image: "images/void-03.jpg",
+    tags: ["poems"],
+    text: `I don't want to run with no one but you.
+    You can be ahead, beside, or following me.
+    
+    as long as we move forward together`
+  },
+  {
     date: "2026-09-22",
     image: "images/void-01.jpg",
     tags: ["thoughts"],
