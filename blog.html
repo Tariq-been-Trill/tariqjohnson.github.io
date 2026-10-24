@@ -1,367 +1,165 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>the void.</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --onyx: #08090A;
-      --pearl: #EDE9E1;
-      --muted: #6E7274;
-      --gold: #C6A15B;
-      --gold-bright: #E0BE7E;
-      --hairline: rgba(237,233,225,0.10);
-    }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>the void.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --onyx:#08090A; --pearl:#EDE9E1; --muted:#6E7274; --white:#FFFFFF;
+    --hairline:rgba(237,233,225,0.10);
+  }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; background:var(--onyx); }
+  body{
+    font-family:'JetBrains Mono',monospace; color:var(--pearl); line-height:1.6;
+    padding-bottom:calc(48px + env(safe-area-inset-bottom,0px));
+  }
+  .head{ text-align:center; padding:56px 24px 28px; }
+  .head h1{ margin:0 0 10px; font-weight:500; font-size:clamp(28px,8vw,42px); letter-spacing:.02em; }
+  .head p{ margin:0; font-size:13px; color:var(--muted); }
 
-    * { box-sizing: border-box; }
+  .filters{ max-width:640px; margin:0 auto; padding:0 24px 40px; display:flex; flex-direction:column; gap:14px; }
+  .search{
+    width:100%; padding:12px 16px; font:inherit; font-size:14px; color:var(--pearl);
+    background:rgba(237,233,225,.05); border:1px solid var(--hairline); outline:none; border-radius:0;
+  }
+  .search:focus{ border-color:var(--white); }
+  .search::placeholder{ color:var(--muted); }
+  .chips{ display:flex; flex-wrap:wrap; gap:8px 14px; font-size:12px; min-height:18px; }
+  .chip{ color:var(--muted); cursor:pointer; user-select:none; background:none; border:0; padding:0; font:inherit; }
+  .chip:hover{ color:var(--pearl); }
+  .chip.active{ color:var(--white); text-decoration:underline; text-underline-offset:4px; }
 
-    html, body {
-      margin: 0;
-      height: 100%;
-      background: var(--onyx);
-      overscroll-behavior: none;
-    }
+  /* every post: same full-width frame, same treatment */
+  .post{ margin:0 0 72px; }
+  .post.hidden{ display:none; }
+  .frame{ width:100%; aspect-ratio:3/2; background:#111; overflow:hidden; }
+  .frame img{
+    width:100%; height:100%; object-fit:cover; display:block;
+    filter:saturate(.92) contrast(1.03);
+    opacity:0; transition:opacity .8s ease;
+  }
+  .frame img.loaded{ opacity:1; }
+  .body{ max-width:640px; margin:0 auto; padding:28px 24px 0; }
+  .text{ font-size:14px; line-height:1.8; white-space:pre-wrap; overflow-wrap:break-word; margin:0 0 22px; }
+  .meta{ display:flex; flex-wrap:wrap; gap:6px 14px; font-size:11px; color:var(--muted); letter-spacing:.02em; }
+  .meta .date{ color:var(--pearl); }
+  .meta .tag{ cursor:pointer; background:none; border:0; padding:0; font:inherit; color:var(--muted); }
+  .meta .tag:hover{ color:var(--white); }
 
-    body {
-      min-height: 100vh;
-      font-family: 'JetBrains Mono', monospace;
-      color: var(--pearl);
-      padding: 24px;
-      line-height: 1.6;
-    }
-
-    .container {
-      width: 100%;
-      max-width: 600px;
-      margin: 0 auto;
-    }
-
-    .header {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin-bottom: 48px;
-      text-align: center;
-      border-bottom: 1px solid var(--hairline);
-      padding-bottom: 24px;
-    }
-
-    .header h1 {
-      font-size: clamp(28px, 8vw, 42px);
-      margin: 0 0 12px 0;
-      letter-spacing: 0.02em;
-      font-weight: 500;
-    }
-
-    .header p {
-      font-size: 13px;
-      color: var(--muted);
-      margin: 0;
-      letter-spacing: 0.01em;
-    }
-
-    .search-bar {
-      width: 100%;
-      margin-bottom: 36px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .search-input {
-      width: 100%;
-      padding: 12px 16px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 14px;
-      background: rgba(237,233,225,0.05);
-      border: 1px solid var(--hairline);
-      color: var(--pearl);
-      outline: none;
-      transition: all 0.2s ease;
-    }
-
-    .search-input:focus {
-      background: rgba(237,233,225,0.08);
-      border-color: var(--gold);
-    }
-
-    .search-input::placeholder {
-      color: var(--muted);
-    }
-
-    .tags-display {
-      font-size: 12px;
-      color: var(--muted);
-      min-height: 16px;
-    }
-
-    .tag {
-      display: inline-block;
-      background: rgba(198,161,91,0.15);
-      color: var(--gold);
-      padding: 2px 8px;
-      margin-right: 6px;
-      margin-bottom: 4px;
-      border-radius: 2px;
-      cursor: pointer;
-      transition: all 0.15s ease;
-      user-select: none;
-    }
-
-    .tag:hover {
-      background: rgba(198,161,91,0.25);
-      color: var(--gold-bright);
-    }
-
-    .tag.active {
-      background: var(--gold);
-      color: var(--onyx);
-    }
-
-    .entries {
-      display: flex;
-      flex-direction: column;
-      gap: 32px;
-    }
-
-    .entry {
-      padding-bottom: 24px;
-      border-bottom: 1px solid var(--hairline);
-      transition: opacity 0.3s ease;
-    }
-
-    .entry.hidden {
-      display: none;
-    }
-
-    .entry-date {
-      font-size: 12px;
-      color: var(--muted);
-      letter-spacing: 0.02em;
-      text-transform: uppercase;
-      margin-bottom: 8px;
-    }
-
-    .entry-content {
-      font-size: 14px;
-      line-height: 1.7;
-      margin-bottom: 12px;
-      white-space: pre-wrap;
-      word-wrap: break-word;
-    }
-
-    .entry-tags {
-      font-size: 11px;
-      color: var(--muted);
-      letter-spacing: 0.01em;
-    }
-
-    .entry-tag {
-      display: inline-block;
-      background: rgba(198,161,91,0.1);
-      color: var(--gold);
-      padding: 2px 6px;
-      margin-right: 4px;
-      margin-bottom: 2px;
-      border-radius: 1px;
-      cursor: pointer;
-      transition: all 0.15s ease;
-      user-select: none;
-    }
-
-    .entry-tag:hover {
-      background: rgba(198,161,91,0.2);
-      color: var(--gold-bright);
-    }
-
-    .no-results {
-      text-align: center;
-      color: var(--muted);
-      font-size: 13px;
-      padding: 32px 0;
-      opacity: 0.7;
-    }
-
-    .back-link {
-      display: inline-block;
-      margin-top: 24px;
-      padding-top: 24px;
-      border-top: 1px solid var(--hairline);
-      text-decoration: none;
-      color: var(--gold);
-      font-size: 12px;
-      letter-spacing: 0.02em;
-      transition: color 0.2s ease;
-    }
-
-    .back-link:hover {
-      color: var(--gold-bright);
-    }
-  </style>
+  .empty{ text-align:center; color:var(--muted); font-size:13px; padding:24px; }
+  .exit{
+    display:block; width:max-content; margin:0 auto; padding-top:24px;
+    color:var(--white); text-decoration:none; font-size:13px; letter-spacing:.04em;
+  }
+  .exit:hover{ opacity:.7; }
+</style>
 </head>
 <body>
 
-  <div class="container">
-    <div class="header">
-      <h1>The Void</h1>
-      <p>thoughts, ideas, poems</p>
-    </div>
+  <header class="head">
+    <h1>The Void</h1>
+    <p>thoughts, ideas, poems</p>
+  </header>
 
-    <div class="search-bar">
-      <input 
-        type="text" 
-        id="searchInput" 
-        class="search-input" 
-        placeholder="search by tag: ramble, thoughts, september, 2026..."
-      >
-      <div id="tagsDisplay" class="tags-display"></div>
-    </div>
-
-    <div class="entries" id="entries">
-      <!-- Entry template (copy this block and modify to add new entries):
-      <article class="entry" data-tags="september, 2026, thoughts">
-        <div class="entry-date">september 6, 2026</div>
-        <div class="entry-content">Your thoughts go here.</div>
-        <div class="entry-tags">
-          <span class="entry-tag" data-tag="september">september</span>
-          <span class="entry-tag" data-tag="2026">2026</span>
-          <span class="entry-tag" data-tag="thoughts">thoughts</span>
-        </div>
-      </article>
-      -->
-
-      <article class="entry" data-tags="september, 2026, poems">
-        <div class="entry-date">september 5, 2026</div>
-        <div class="entry-content">will we see each other again?
-        <b>it is what it is</b>
-        </div>
-        <div class="entry-tags">
-          <span class="entry-tag" data-tag="september">september</span>
-          <span class="entry-tag" data-tag="2026">2026</span>
-          <span class="entry-tag" data-tag="poems">poems</span>
-        </div>
-      </article>
-
-            <article class="entry" data-tags="september, 2026, thoughts">
-        <div class="entry-date">september 22, 2026</div>
-        <div class="entry-content">The saddest day of my life wasn't the day you died.
-          <b>It was a year later..</b>
-          <b>Realizing that we had no routine that was disrupted, No tradition that was broken, No real memories to carry on.</b>
-          <b>That's the day I had to realized that my fragile illusion of family shattered.</b>
-        </div>
-        <div class="entry-tags">
-          <span class="entry-tag" data-tag="september">september</span>
-          <span class="entry-tag" data-tag="2026">2026</span>
-          <span class="entry-tag" data-tag="thoughts">thoughts</span>
-        </div>
-      </article>
-
-    </div>
-
-    <a href="index.html" class="back-link">Exit the Void</a>
+  <div class="filters">
+    <input class="search" id="search" type="text" placeholder="search by tag: poems, thoughts, september, 2026..." autocomplete="off">
+    <div class="chips" id="chips"></div>
   </div>
 
+  <main id="feed"></main>
+
+  <a class="exit" href="index.html">Exit the Void</a>
+
+  <script src="posts.js"></script>
   <script>
-    const searchInput = document.getElementById('searchInput');
-    const tagsDisplay = document.getElementById('tagsDisplay');
-    const entriesContainer = document.getElementById('entries');
-    const entries = document.querySelectorAll('.entry');
+    const MONTHS = ["january","february","march","april","may","june","july","august","september","october","november","december"];
+    const feed = document.getElementById('feed');
+    const chipsEl = document.getElementById('chips');
+    const search = document.getElementById('search');
 
-    let activeTags = new Set();
-    let allTags = new Set();
-
-    // Build set of all available tags
-    entries.forEach(entry => {
-      const tags = entry.getAttribute('data-tags');
-      if (tags) {
-        tags.split(',').forEach(tag => {
-          allTags.add(tag.trim().toLowerCase());
-        });
-      }
+    // newest first, with month + year tags added automatically
+    const posts = [...window.POSTS].sort((a,b) => b.date.localeCompare(a.date)).map(p => {
+      const [y,m,d] = p.date.split('-').map(Number);
+      const month = MONTHS[m-1];
+      const tags = [...new Set([...(p.tags||[]), month, String(y)].map(t => t.toLowerCase()))];
+      return { ...p, tags, label: `${month} ${d}, ${y}` };
     });
 
-    // Populate tags display
-    function renderTags() {
-      tagsDisplay.innerHTML = '';
-      Array.from(allTags).sort().forEach(tag => {
-        const span = document.createElement('span');
-        span.className = 'tag' + (activeTags.has(tag) ? ' active' : '');
-        span.textContent = tag;
-        span.addEventListener('click', () => toggleTag(tag));
-        tagsDisplay.appendChild(span);
+    const allTags = [...new Set(posts.flatMap(p => p.tags))].sort();
+    const active = new Set();
+    let typed = [];
+
+    function el(tag, cls, text){
+      const n = document.createElement(tag);
+      if (cls) n.className = cls;
+      if (text !== undefined) n.textContent = text;
+      return n;
+    }
+
+    const nodes = posts.map(p => {
+      const art = el('article','post');
+      if (p.image){
+        const frame = el('div','frame');
+        const img = new Image();
+        img.alt = ''; img.loading = 'lazy'; img.decoding = 'async';
+        img.onload = () => img.classList.add('loaded');
+        img.src = p.image;
+        frame.appendChild(img);
+        art.appendChild(frame);
+      }
+      const body = el('div','body');
+      body.appendChild(el('p','text', p.text));
+      const meta = el('div','meta');
+      meta.appendChild(el('span','date', p.label));
+      p.tags.forEach(t => {
+        const b = el('button','tag', t);
+        b.type = 'button';
+        b.onclick = () => { active.clear(); active.add(t); update(); window.scrollTo({top:0,behavior:'smooth'}); };
+        meta.appendChild(b);
+      });
+      body.appendChild(meta);
+      art.appendChild(body);
+      feed.appendChild(art);
+      return { art, tags: p.tags };
+    });
+
+    const none = el('div','empty','no entries found with those tags');
+    none.hidden = true;
+    feed.appendChild(none);
+
+    function renderChips(){
+      chipsEl.textContent = '';
+      allTags.forEach(t => {
+        const b = el('button','chip' + (active.has(t) ? ' active' : ''), t);
+        b.type = 'button';
+        b.onclick = () => { active.has(t) ? active.delete(t) : active.add(t); update(); };
+        chipsEl.appendChild(b);
       });
     }
 
-    function toggleTag(tag) {
-      if (activeTags.has(tag)) {
-        activeTags.delete(tag);
-      } else {
-        activeTags.add(tag);
-      }
-      filterEntries();
-      renderTags();
-    }
-
-    function filterEntries() {
-      let visibleCount = 0;
-
-      entries.forEach(entry => {
-        const tags = entry.getAttribute('data-tags');
-        const entryTags = tags ? tags.split(',').map(t => t.trim().toLowerCase()) : [];
-        
-        // Show if no filters active, or if entry contains all active tags
-        const matches = activeTags.size === 0 || 
-                       Array.from(activeTags).every(tag => entryTags.includes(tag));
-        
-        if (matches) {
-          entry.classList.remove('hidden');
-          visibleCount++;
-        } else {
-          entry.classList.add('hidden');
-        }
+    function update(){
+      let shown = 0;
+      nodes.forEach(n => {
+        const ok = [...active].every(t => n.tags.includes(t)) &&
+                   typed.every(q => n.tags.some(t => t.startsWith(q)));
+        n.art.classList.toggle('hidden', !ok);
+        if (ok) shown++;
       });
-
-      // Show "no results" message if needed
-      let noResultsMsg = document.getElementById('noResults');
-      if (visibleCount === 0) {
-        if (!noResultsMsg) {
-          noResultsMsg = document.createElement('div');
-          noResultsMsg.id = 'noResults';
-          noResultsMsg.className = 'no-results';
-          noResultsMsg.textContent = 'no entries found with those tags';
-          entriesContainer.appendChild(noResultsMsg);
-        }
-      } else {
-        if (noResultsMsg) noResultsMsg.remove();
-      }
+      none.hidden = shown > 0;
+      renderChips();
     }
 
-    // Search input listener
-    searchInput.addEventListener('input', (e) => {
-      const query = e.target.value.toLowerCase().trim();
-      if (query) {
-        // Split by comma or space for multi-tag search
-        const searchTags = query.split(/[,\s]+/).filter(t => t.length > 0);
-        activeTags.clear();
-        searchTags.forEach(tag => {
-          if (allTags.has(tag)) {
-            activeTags.add(tag);
-          }
-        });
-      } else {
-        activeTags.clear();
-      }
-      filterEntries();
-      renderTags();
+    search.addEventListener('input', e => {
+      typed = e.target.value.toLowerCase().split(/[,\s]+/).filter(Boolean);
+      update();
     });
 
-    // Initial render
-    renderTags();
+    update();
   </script>
-
 </body>
 </html>
